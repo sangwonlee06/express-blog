@@ -1,7 +1,6 @@
 import productModel from "../models/productModel.js";
 
 const getAllProducts = async (req, res) => {
-    // console.log("product total get");
 
     const products = await productModel.find().sort({ date: -1 });
 

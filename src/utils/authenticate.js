@@ -8,7 +8,6 @@ opts.secretOrKey = process.env.JWT_ACCESSTOKEN_SECRET || 'defaultSecretKey';
 const authenticate = (passport) => {
     passport.use(
         new JwtStrategy(opts, async (payload, done) => {
-            console.log(payload.userId)
             try {
                 const user = await User.findById(payload.userId);
                 if (user) {

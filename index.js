@@ -4,8 +4,9 @@ dotenv.config(); // This has to be called before other imports
 import express from 'express';
 import connectDB from './src/configs/database.js';
 import productRoutes from './src/routes/productRoutes.js';
-import userRoutes from "./src/routes/userRoute.js";
-import authRoutes from "./src/routes/authRoute.js";
+import userRoutes from "./src/routes/userRoutes.js";
+import authRoutes from "./src/routes/authRoutes.js";
+import profileRoutes from "./src/routes/profileRoutes.js";
 import bodyParser from "body-parser";
 import morgan from "morgan";
 import helmet from "helmet";
@@ -37,6 +38,7 @@ authenticate(passport);  // Register the JWT strategy
 app.use('/products', productRoutes);
 app.use('/users', userRoutes)
 app.use('/auth', authRoutes)
+app.use('/profiles', profileRoutes)
 
 // Error handler middleware
 app.use(errorHandler);
