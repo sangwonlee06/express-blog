@@ -1,100 +1,52 @@
-import userModel from "../models/userModel.js";
-import bcrypt from 'bcryptjs';
-import gravatar from 'gravatar';
-import jwt from 'jsonwebtoken';
+import * as authService from '../services/authService.js';
 
 const createUser = async (req, res) => {
     const { username, email, password } = req.body;
+    const result = await authService.createUser({ username, email, password });
 
-    const existingUser = await userModel.findOne({ email });
-
-    if (existingUser) {
+    if (result.error) {
         return res.status(409).json({
             success: false,
-            message: "Email already in use"
-        });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const profileImage = gravatar.url(email, {
-        s: '200',
-        r: 'pg',
-        d: 'mm',
-        protocol: 'https',
-    });
-
-    const newUser = new userModel({
-        username,
-        email,
-        password: hashedPassword,
-        profileImage,
-    });
-
-    const savedUser = await newUser.save();
-
-    if (!savedUser) {
-        return res.status(400).json({
-            message: "Failed to create user"
+            message: result.error,
         });
     }
 
     res.status(201).json({
         success: true,
-        data: savedUser
+        data: result,
     });
 };
 
 const signInUser = async (req, res) => {
     const { email, password } = req.body;
+    const result = await authService.signInUser({ email, password });
 
-    const user = await userModel.findOne({ email });
-
-    if (!user) {
-        return res.status(404).json({
-            success: false,
-            message: "User not found"
-        });
-    }
-
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordCorrect) {
+    if (result.error) {
         return res.status(400).json({
             success: false,
-            message: "Password is incorrect"
-        });
-    }
-
-    const payload = { userId: user._id };
-    const token = jwt.sign(
-        payload,
-        process.env.JWT_ACCESSTOKEN_SECRET || 'defaultSecretKey',
-        { expiresIn: process.env.JWT_ACCESSTOKEN_EXPIRATION_TIME || '1h' }
-    );
-
-    if (!token) {
-        return res.status(500).json({
-            success: false,
-            message: "Failed to generate token"
+            message: result.error,
         });
     }
 
     res.status(200).json({
         success: true,
-        data: { user, token }
+        data: result,
     });
 };
 
 const getUserInfoByToken = async (req, res) => {
-    if (!req.user) {
+    const result = await authService.getUserInfoByToken(req.user);
+
+    if (result.error) {
         return res.status(400).json({
-            message: "User not found"
+            success: false,
+            message: result.error,
         });
     }
 
     res.status(200).json({
-        userInfo: req.user
+        success: true,
+        data: result,
     });
 };
 

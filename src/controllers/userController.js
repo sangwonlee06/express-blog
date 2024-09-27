@@ -1,7 +1,7 @@
-import userModel from "../models/userModel.js";
+import * as userService from "../services/userService.js";
 
 const getAllUsers = async (req, res) => {
-    const users = await userModel.find().sort({ date: -1 });
+    const users = await userService.getAllUsers();
 
     if (!users || users.length === 0) {
         return res.status(200).json({
@@ -17,7 +17,7 @@ const getAllUsers = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
-    const user = await userModel.findById(req.params.userId);
+    const user = await userService.getUserById(req.params.userId);
 
     if (!user) {
         return res.status(404).json({
@@ -32,26 +32,12 @@ const getUserById = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-    const { username, email, password } = req.body;
+    const updatedUser = await userService.updateUser(req.params.userId, req.body);
 
-    const user = await userModel.findById(req.params.userId);
-
-    if (!user) {
+    if (!updatedUser) {
         return res.status(404).json({
             success: false,
             message: "No user found"
-        });
-    }
-
-    if (username) user.username = username;
-    if (email) user.email = email;
-    if (password) user.password = password;
-
-    const updatedUser = await user.save();
-
-    if (!updatedUser) {
-        return res.status(400).json({
-            message: "Failed to update user"
         });
     }
 
@@ -62,7 +48,7 @@ const updateUser = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-    const user = await userModel.findByIdAndDelete(req.params.userId);
+    const user = await userService.deleteUser(req.params.userId);
 
     if (!user) {
         return res.status(404).json({

@@ -35,10 +35,10 @@ app.use(passport.initialize());
 authenticate(passport);  // Register the JWT strategy
 
 // Routes
-app.use('/products', productRoutes);
-app.use('/users', userRoutes)
-app.use('/auth', authRoutes)
-app.use('/profiles', profileRoutes)
+app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes)
+app.use('/api/auth', authRoutes)
+app.use('/api/profiles', profileRoutes)
 
 // Error handler middleware
 app.use(errorHandler);
