@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config(); // This has to be called before other imports
 
 import express from 'express';
-import connectDB from './src/configs/database.js';
+import connectDB from './src/config/database.js';
 import productRoutes from './src/routes/productRoutes.js';
 import userRoutes from "./src/routes/userRoutes.js";
 import authRoutes from "./src/routes/authRoutes.js";
@@ -12,7 +12,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import passport from 'passport';
 import authenticate from './src/utils/authenticate.js';
-import errorHandler from "./src/middlewares/errorHandler.js";
+import errorHandler from "./src/middleware/errorHandler.js";
 
 const app = express();
 
